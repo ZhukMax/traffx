@@ -17,3 +17,5 @@ Route::get('/pages/{id}',  'PageController@show');
 Auth::routes();
 
 Route::get('/admin', 'AdminController@index');
+Route::get('/admin/pages', 'AdminController@pages');
+Route::get('/admin/page/{id}', 'AdminController@page');

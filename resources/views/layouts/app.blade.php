@@ -59,6 +59,8 @@
 
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                        <a href="{{ url('/admin') }}">App Statistics</a>
+                                        <a href="{{ url('/admin/pages') }}">Pages</a>
                                         <a href="{{ url('/logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
