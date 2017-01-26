@@ -71,7 +71,7 @@ class Statistics
     /**
      * Add sets from array.
      *
-     * @param $data
+     * @param array $data
      */
     private function addSets($data)
     {
@@ -83,9 +83,9 @@ class Statistics
     /**
      * Add IP-address to sets.
      *
-     * @param $pageID
-     * @param $ip
-     * @param $data
+     * @param int $pageID
+     * @param string $ip
+     * @param array $data
      */
     private function addSetsIPs($pageID, $ip, $data)
     {
@@ -106,7 +106,7 @@ class Statistics
     {
         foreach ($data as $key => $value) {
             if ($type === 'ipUnique' &&
-                Redis::sismember('Statistics:' . $pageID . ':' . $key. ':' . $value, $ip)
+                Redis::sismember('Statistics:' . $pageID . ':' . $key. ':' . $value, $ip) === 1
             ) {
                 continue;
             }
@@ -147,7 +147,6 @@ class Statistics
                 $data[self::TYPE_GEO]          = self::getLocate($ip);
 
                 self::addSets($data);
-                self::addSetsIPs($pageID, $ip, $data);
 
                 /*
                  * Increment Statistic data
@@ -160,6 +159,11 @@ class Statistics
                     Cookie::queue('stat-' . $pageID, '1', $this->minutes);
                     self::incrStatistics($pageID, 'cookieUnique', $data);
                 }
+
+                /**
+                 * Add IP in set.
+                 */
+                self::addSetsIPs($pageID, $ip, $data);
             }
         } catch (NoResultFoundException $ex){
             // nothing found

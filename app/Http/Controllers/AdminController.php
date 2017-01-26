@@ -70,7 +70,8 @@ class AdminController extends Controller
             'platforms'    => $platforms,
             'browsers'     => $browsers,
             'referers'     => $referers,
-            'geolocations' => $geolocations
+            'geolocations' => $geolocations,
+            'pageID'       => $id
         ]);
     }
 }

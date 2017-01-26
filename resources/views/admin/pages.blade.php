@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2>Pages</h2>
+                <h2>List links with statistics for pages</h2>
 
                 <div class="panel panel-default">
                     <div class="panel-body">

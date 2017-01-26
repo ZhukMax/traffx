@@ -4,7 +4,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2>Statistics</h2>
+                @if(isset($pageID))
+                    <h2>Statistics for page ID#{{ $pageID }}</h2>
+                @else
+                    <h2>Statistics for site</h2>
+                @endif
 
                 <div class="panel panel-default">
                     <!-- Nav tabs -->
@@ -19,99 +23,23 @@
 
                         <div role="tabpanel" class="tab-pane active" id="os">
                             <div class="panel-body">
-                                <table class="table table-bordered col-lg-12">
-                                    <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Hits</th>
-                                        <th>IP unique</th>
-                                        <th>Cookie unique</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($platforms as $platform)
-                                    <tr>
-                                        <td>{{ $platform['name'] }}</td>
-                                        <td>{{ $platform['hits'] }}</td>
-                                        <td>{{ $platform['ipUnique'] }}</td>
-                                        <td>{{ $platform['cookieUnique'] }}</td>
-                                    </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.statistics.tables', ['data' => $platforms])
                             </div>
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="browsers">
                             <div class="panel-body">
-                                <table class="table table-bordered col-lg-12">
-                                    <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Hits</th>
-                                        <th>IP unique</th>
-                                        <th>Cookie unique</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($browsers as $browser)
-                                        <tr>
-                                            <td>{{ $browser['name'] }}</td>
-                                            <td>{{ $browser['hits'] }}</td>
-                                            <td>{{ $browser['ipUnique'] }}</td>
-                                            <td>{{ $browser['cookieUnique'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.statistics.tables', ['data' => $browsers])
                             </div>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="geo">
                             <div class="panel-body">
-                                <table class="table table-bordered col-lg-12">
-                                    <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Hits</th>
-                                        <th>IP unique</th>
-                                        <th>Cookie unique</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($geolocations as $geolocation)
-                                        <tr>
-                                            <td>{{ $geolocation['name'] }}</td>
-                                            <td>{{ $geolocation['hits'] }}</td>
-                                            <td>{{ $geolocation['ipUnique'] }}</td>
-                                            <td>{{ $geolocation['cookieUnique'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.statistics.tables', ['data' => $geolocations])
                             </div>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="referrals">
                             <div class="panel-body">
-                                <table class="table table-bordered col-lg-12">
-                                    <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Hits</th>
-                                        <th>IP unique</th>
-                                        <th>Cookie unique</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($referers as $referer)
-                                        <tr>
-                                            <td>{{ $referer['name'] }}</td>
-                                            <td>{{ $referer['hits'] }}</td>
-                                            <td>{{ $referer['ipUnique'] }}</td>
-                                            <td>{{ $referer['cookieUnique'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                @include('partials.statistics.tables', ['data' => $referers])
                             </div>
                         </div>
 
