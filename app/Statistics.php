@@ -143,7 +143,7 @@ class Statistics
                 $ip                            = $_SERVER['REMOTE_ADDR'];
                 $data[self::TYPE_PLATFORMS]    = $result->getOperatingSystem()->getName();
                 $data[self::TYPE_BROWSERS]     = $result->getBrowser()->getName();
-                $data[self::TYPE_REFERERS]     = $_SERVER["HTTP_REFERER"];
+                $data[self::TYPE_REFERERS]     = isset($_SERVER['HTTP_REFERER']) ?? 'none';
                 $data[self::TYPE_GEO]          = self::getLocate($ip);
 
                 self::addSets($data);
@@ -183,7 +183,8 @@ class Statistics
         $host = str_replace('{IP}', $ip, $host);
         $response = file_get_contents($host, 'r');
         $data = unserialize($response);
+        $city = isset($data['geoplugin_city']) ?? 'unknown';
 
-        return $data['geoplugin_city'];
+        return $city;
     }
 }
