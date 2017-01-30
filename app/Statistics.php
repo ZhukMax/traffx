@@ -4,11 +4,8 @@ namespace App;
 
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Cookie;
-use UserAgentParser\Exception\NoResultFoundException;
-use UserAgentParser\Provider\Http\UserAgentStringCom;
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Handler\CurlHandler;
+use Sinergi\BrowserDetector\Os;
+use Sinergi\BrowserDetector\Browser;
 
 /**
  * Class Statistics
@@ -129,45 +126,33 @@ class Statistics
      */
     public function addStatisticsData($pageID = 0)
     {
-        $client = new Client([
-            'handler' => HandlerStack::create(new CurlHandler()),
-        ]);
+        $os      = new Os();
+        $browser = new Browser();
 
-        $provider = new UserAgentStringCom($client);
+        $ip                            = $_SERVER['REMOTE_ADDR'];
+        $data[self::TYPE_PLATFORMS]    = $os->getName();
+        $data[self::TYPE_BROWSERS]     = $browser->getName();
+        $data[self::TYPE_REFERERS]     = isset($_SERVER['HTTP_REFERER']) ?? 'none';
+        $data[self::TYPE_GEO]          = self::getLocate($ip);
 
-        try {
-            /* @var $result \UserAgentParser\Model\UserAgent */
-            $result = $provider->parse($_SERVER['HTTP_USER_AGENT']);
+        self::addSets($data);
 
-            if($result->isBot() === false) {
-                $ip                            = $_SERVER['REMOTE_ADDR'];
-                $data[self::TYPE_PLATFORMS]    = $result->getOperatingSystem()->getName();
-                $data[self::TYPE_BROWSERS]     = $result->getBrowser()->getName();
-                $data[self::TYPE_REFERERS]     = isset($_SERVER['HTTP_REFERER']) ?? 'none';
-                $data[self::TYPE_GEO]          = self::getLocate($ip);
+        /*
+         * Increment Statistic data
+         */
+        self::incrStatistics($pageID, 'hits', $data);
+        self::incrStatistics($pageID, 'ipUnique', $data, $ip);
 
-                self::addSets($data);
-
-                /*
-                 * Increment Statistic data
-                 */
-                self::incrStatistics($pageID, 'hits', $data);
-                self::incrStatistics($pageID, 'ipUnique', $data, $ip);
-
-                $cookie = Cookie::get('stat-' . $pageID);
-                if (!$cookie) {
-                    Cookie::queue('stat-' . $pageID, '1', $this->minutes);
-                    self::incrStatistics($pageID, 'cookieUnique', $data);
-                }
-
-                /**
-                 * Add IP in set.
-                 */
-                self::addSetsIPs($pageID, $ip, $data);
-            }
-        } catch (NoResultFoundException $ex){
-            // nothing found
+        $cookie = Cookie::get('stat-' . $pageID);
+        if (!$cookie) {
+            Cookie::queue('stat-' . $pageID, '1', $this->minutes);
+            self::incrStatistics($pageID, 'cookieUnique', $data);
         }
+
+        /**
+         * Add IP in set.
+         */
+        self::addSetsIPs($pageID, $ip, $data);
     }
 
     /**
